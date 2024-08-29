@@ -62,7 +62,6 @@ namespace UniversityManagementSystem.BLL.Service
             {
                 category.ShortName = request.ShortName;
             }
-            
             return await _repository.UpdateCategory(category);
 
         }

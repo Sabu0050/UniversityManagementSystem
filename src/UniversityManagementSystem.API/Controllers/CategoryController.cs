@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using UniversityManagementSystem.API.ViewModel.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
 using UniversityManagementSystem.BLL.Service;
-using UniversityManagementSystem.DLL.DbContext;
-using UniversityManagementSystem.DLL.Model;
+using UniversityManagementSystem.BLL.ViewModel.Requests;
 
 namespace UniversityManagementSystem.API.Controllers
 {
@@ -22,8 +17,7 @@ namespace UniversityManagementSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll() {
 
-            var category = await _categoryService.GetAllCategories();
-            return Ok(category);
+            return Ok(await _categoryService.GetAllCategories());
         }
 
         
@@ -31,54 +25,24 @@ namespace UniversityManagementSystem.API.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> GetAData(int id)
         {
-            var category = await _categoryService.GetCategoryById(id);
-            if (category == null)
-            {
-                return NotFound("Data not found");
-            }
-            return Ok(category);
+            return Ok(await _categoryService.GetCategoryById(id));
         }
 
         [HttpPost]
         public async Task<ActionResult> InsertCategory(CategoryInsertRequestViewModel request) {
 
-           var category = new Category { 
-                Name = request.Name
-           };
-            var result = await _categoryService.InsertCategory(category);
-
-            if (result == null) {
-                return NotFound("Data not found.");
-            }
-            return Ok(result);
-
+            return Ok(await _categoryService.InsertCategory(request));
         }
 
         [HttpPut("id")]
         public async Task<IActionResult> Update(int id, CategoryInsertRequestViewModel request)
         {
-            var category = new Category
-            {
-                Name = request.Name
-            };
-            var result = await _categoryService.UpdateCategory(id, category);
-
-            if (result == null)
-            {
-                return NotFound("Data not found");
-            }
-
-            return Ok(result);
+            return Ok(await _categoryService.UpdateCategory(id, request));
         }
 
         [HttpDelete("id")]
-        public async Task<IActionResult> DeleteCategory(int Id) {
-            
-            var result = await _categoryService.DeleteCategory(Id);
-
-            if (result != 0) return Ok("Data delete successfully.");
-
-            return BadRequest("Data request format is incorrect.");
+        public async Task<IActionResult> DeleteCategory(int Id) {  
+            return Ok(await _categoryService.DeleteCategory(Id));
         }
 
     }

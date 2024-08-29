@@ -12,7 +12,7 @@ using UniversityManagementSystem.DLL.DbContext;
 namespace UniversityManagementSystem.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240829112425_InitialCreate")]
+    [Migration("20240829174448_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,21 +24,6 @@ namespace UniversityManagementSystem.DLL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ProductCategory", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ProductCategory");
-                });
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.Category", b =>
                 {
@@ -59,6 +44,9 @@ namespace UniversityManagementSystem.DLL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShortName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
@@ -67,6 +55,21 @@ namespace UniversityManagementSystem.DLL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("UniversityManagementSystem.DLL.Model.CategoryProduct", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CategoryProduct");
                 });
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.Product", b =>
@@ -104,7 +107,7 @@ namespace UniversityManagementSystem.DLL.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ProductCategory", b =>
+            modelBuilder.Entity("UniversityManagementSystem.DLL.Model.CategoryProduct", b =>
                 {
                     b.HasOne("UniversityManagementSystem.DLL.Model.Category", null)
                         .WithMany()

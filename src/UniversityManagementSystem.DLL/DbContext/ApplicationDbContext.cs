@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using UniversityManagementSystem.DLL.Model;
 
 namespace UniversityManagementSystem.DLL.DbContext
@@ -19,24 +20,12 @@ namespace UniversityManagementSystem.DLL.DbContext
 
             // Configure many-to-many relationship
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.Categories)
-                .WithMany(c => c.Products)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ProductCategory",
-                    j => j
-                        .HasOne<Category>()
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j => j
-                        .HasOne<Product>()
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("ProductId", "CategoryId");
-                    });
+                .HasMany(p => p.Categoris)
+                .WithMany(p => p.Products)
+                .UsingEntity<CategoryProduct>(
+                    l => l.HasOne<Category>().WithMany().HasForeignKey(e => e.CategoryId),
+                    r => r.HasOne<Product>().WithMany().HasForeignKey(e => e.ProductId)
+                );
 
             // Optional: Configure default values for CreatedAt and UpdatedAt
             modelBuilder.Entity<Product>()

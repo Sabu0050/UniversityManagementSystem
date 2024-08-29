@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UniversityManagementSystem.DLL.Model
 {
-    internal class ProductCategory
+    internal class CategoryProduct
     {
         public int ProductId { get; set; }
         public int CategoryId { get; set; }

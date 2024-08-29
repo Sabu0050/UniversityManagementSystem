@@ -1,7 +1,10 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using UniversityManagementSystem.BLL.ViewModel.Requests;
 using UniversityManagementSystem.DLL.DbContext;
 using UniversityManagementSystem.DLL.Model;
+using UniversityManagementSystem.DLL.Repository;
 
 namespace UniversityManagementSystem.BLL.Service
 {
@@ -10,73 +13,65 @@ namespace UniversityManagementSystem.BLL.Service
         Task<List<Category>> GetAllCategories();
         Task<Category> GetCategoryById(int id);
 
-        Task<Category> InsertCategory(Category category);
+        Task<Category> InsertCategory(CategoryInsertRequestViewModel category);
 
-        Task<Category> UpdateCategory(int id ,Category category);
+        Task<Category> UpdateCategory(int id ,CategoryInsertRequestViewModel category);
 
-        Task<int> DeleteCategory(int id);
+        Task<Category> DeleteCategory(int id);
     }
 
     public class CategoryService : ICategoryService
     {
-        private readonly ApplicationDbContext _context;
-        public CategoryService(ApplicationDbContext context)
+        private readonly ICategoryRepository _repository;
+        public CategoryService(ICategoryRepository repository)
         {
-            _context = context;
+           _repository = repository;
         }
 
         public async Task<List<Category>> GetAllCategories()
         {
-            return await _context.Categories.AsQueryable().ToListAsync();
+            return await _repository.GetAllCategories();
         }
 
         public async Task<Category> GetCategoryById(int id)
         {
-           return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+           return await _repository.GetCategoryById(id);
         }
 
-        public async Task<Category> InsertCategory(Category category)
+        public async Task<Category> InsertCategory(CategoryInsertRequestViewModel request)
         {
-           
-            _context.Categories.Add(category);
+            var category = new Category { 
+                Name = request.Name,
+                ShortName = request.ShortName,
+            };
 
-            if (await _context.SaveChangesAsync() > 0)
-            {
+            return await _repository.InsertCategory(category);
 
-                return category;
-            }
-
-            return null;
+            
         }
 
-        public async Task<Category> UpdateCategory(int id, Category request)
+        public async Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category != null)
+            var category = await GetCategoryById(id);
+            if(!request.Name.IsNullOrEmpty())
             {
                 category.Name = request.Name;
-                _context.Categories.Update(category);
 
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return category;
-                }
             }
-
-            return null;
-
-        }
-        public async Task<int> DeleteCategory(int id)
-        {
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-
-            _context.Categories.Remove(category);
-            if (await _context.SaveChangesAsync() > 0)
+            if(!request.ShortName.IsNullOrEmpty())
             {
-                return 1;
+                category.ShortName = request.ShortName;
             }
+            
+            return await _repository.UpdateCategory(category);
 
-            return 0;
         }
+        public async Task<Category> DeleteCategory(int id)
+        {
+
+
+           return await _repository.DeleteCategory(id);
+        }
+
     }
 }

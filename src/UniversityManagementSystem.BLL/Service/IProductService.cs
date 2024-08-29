@@ -1,12 +1,15 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniversityManagementSystem.BLL.ViewModel.Requests;
 using UniversityManagementSystem.DLL.DbContext;
 using UniversityManagementSystem.DLL.Model;
+using UniversityManagementSystem.DLL.Repository;
 
 namespace UniversityManagementSystem.BLL.Service
 {
@@ -15,75 +18,65 @@ namespace UniversityManagementSystem.BLL.Service
         Task<List<Product>> GetAllProducts();
         Task<Product> GetProductById(int id);
 
-        Task<Product> InsertProduct(Product product);
+        Task<Product> InsertProduct(ProductInsertRequestViewModel product);
 
-        Task<Product> UpdateProduct(int id, Product product);
+        Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel product);
 
-        Task<int> DeleteProduct(int id);
+        Task<Product> DeleteProduct(int id);
     }
 
     public class ProductService : IProductService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _repository;
 
-        public ProductService(ApplicationDbContext context)
+        public ProductService(IProductRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        public async Task<int> DeleteProduct(int id)
+        public async Task<Product> DeleteProduct(int id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-            _context.Products.Remove(product);
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return 1;
-            }
-
-            return 0;
+            return await _repository.DeleteProduct(id);
         }
 
         public async Task<List<Product>> GetAllProducts()
         {
-            return await _context.Products.AsQueryable().ToListAsync();
+            return await _repository.GetAllProducts();
         }
 
         public async Task<Product> GetProductById(int id)
         {
-            return await _context.Products.FirstOrDefaultAsync(c => c.Id == id);
+            return await _repository.GetProductById(id);
         }
 
-        public async Task<Product> InsertProduct(Product product)
+        public async Task<Product> InsertProduct(ProductInsertRequestViewModel request)
         {
-            _context.Products.Add(product);
-
-            if (await _context.SaveChangesAsync() > 0)
-            {
-
-                return product;
-            }
-
-            return null;
+            var product = new Product {
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price
+            };
+            return await _repository.InsertProduct(product);
         }
 
-        public async Task<Product> UpdateProduct(int id, Product request)
+        public async Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel request)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
-            if (product != null)
+            var product = await GetProductById(id);
+            if(!request.Name.IsNullOrEmpty())
             {
                 product.Name = request.Name;
-                product.Description = request.Description;
-                product.Price = request.Price;
-                _context.Products.Update(product);
-
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return product;
-                }
             }
 
-            return null;
+            if(!request.Description.IsNullOrEmpty()) 
+            {
+                product.Description = request.Description;
+            }
+            if(request.Price !=0)
+            {
+                product.Price = request.Price;
+            }
+
+            return await _repository.UpdateProduct(product);
         }
     }
 }

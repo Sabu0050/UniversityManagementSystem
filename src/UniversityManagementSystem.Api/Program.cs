@@ -1,5 +1,6 @@
 using UniversityManagementSystem.API.StratupExtension;
 using UniversityManagementSystem.BLL.Service;
+using UniversityManagementSystem.DLL.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDatabaseExtensionHelper(builder.Configuration);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped <IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

@@ -11,7 +11,6 @@ namespace UniversityManagementSystem.API.Controllers
 {
     public class CategoryController : ApiBaseController
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)

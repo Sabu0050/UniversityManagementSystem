@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace UniversityManagementSystem.DLL.Model
 {
-    public class CategoryProdyuct
+    internal class ProductCategory
     {
-        public int CategoryId { get; set; }
         public int ProductId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

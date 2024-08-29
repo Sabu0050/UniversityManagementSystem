@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDatabaseExtensionHelper(builder.Configuration);
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
 var app = builder.Build();
 

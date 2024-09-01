@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
-using UniversityManagementSystem.DLL.DbContext;
 using UniversityManagementSystem.DLL.Model;
 using UniversityManagementSystem.DLL.Repository;
 
@@ -10,67 +9,95 @@ namespace UniversityManagementSystem.BLL.Service
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetAllCategories();
-        Task<Category> GetCategoryById(int id);
-
-        Task<Category> InsertCategory(CategoryInsertRequestViewModel category);
-
-        Task<Category> UpdateCategory(int id ,CategoryInsertRequestViewModel category);
-
+        Task<List<Category>> GetAll();
+        Task<Category?> GetAData(int id);
+        Task<Category> AddCategory(Category request);
+        Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request);
         Task<Category> DeleteCategory(int id);
+
     }
 
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _repository;
-        public CategoryService(ICategoryRepository repository)
+        private readonly ICategoryRepository _categoryRepository;
+
+
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-           _repository = repository;
+            _categoryRepository = categoryRepository;
         }
 
-        public async Task<List<Category>> GetAllCategories()
+        public async Task<List<Category>> GetAll()
         {
-            return await _repository.GetAllCategories();
+            return await _categoryRepository.FindAll().ToListAsync();
         }
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Category> GetAData(int id)
         {
-           return await _repository.GetCategoryById(id);
+            return await _categoryRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Category> InsertCategory(CategoryInsertRequestViewModel request)
+        public async Task<Category> AddCategory(Category category)
         {
-            var category = new Category { 
-                Name = request.Name,
-                ShortName = request.ShortName,
-            };
+            _categoryRepository.Create(category);
 
-            return await _repository.InsertCategory(category);
+            if (await _categoryRepository.SaveChangesAsync())
+            {
+                return category;
+            }
 
-            
+            throw new Exception("something went wrong");
         }
 
         public async Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request)
         {
-            var category = await GetCategoryById(id);
-            if(!request.Name.IsNullOrEmpty())
+            var category = await GetAData(id);
+
+            if (category == null)
+            {
+                throw new Exception("category not found");
+            }
+
+            if (!request.Name.IsNullOrEmpty())
             {
                 category.Name = request.Name;
-
             }
-            if(!request.ShortName.IsNullOrEmpty())
+
+            if (!request.ShortName.IsNullOrEmpty())
             {
                 category.ShortName = request.ShortName;
             }
-            return await _repository.UpdateCategory(category);
 
+            _categoryRepository.Update(category);
+
+            if (await _categoryRepository.SaveChangesAsync())
+            {
+                return category;
+            }
+
+            throw new Exception("something went wrong");
         }
+
+
         public async Task<Category> DeleteCategory(int id)
         {
+            var category = await GetAData(id);
 
+            if (category == null)
+            {
+                throw new Exception("category not found");
+            }
 
-           return await _repository.DeleteCategory(id);
+            _categoryRepository.Delete(category);
+
+            if (await _categoryRepository.SaveChangesAsync())
+            {
+                return category;
+            }
+
+            throw new Exception("something went wrong");
         }
+
 
     }
 }

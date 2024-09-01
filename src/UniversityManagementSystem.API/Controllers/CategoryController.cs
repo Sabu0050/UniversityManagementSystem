@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UniversityManagementSystem.BLL.Service;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
+using UniversityManagementSystem.DLL.Model;
 
 namespace UniversityManagementSystem.API.Controllers
 {
@@ -15,23 +16,27 @@ namespace UniversityManagementSystem.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() {
-
-            return Ok(await _categoryService.GetAllCategories());
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _categoryService.GetAll());
         }
-
-        
 
         [HttpGet("id")]
         public async Task<IActionResult> GetAData(int id)
         {
-            return Ok(await _categoryService.GetCategoryById(id));
+            return Ok(await _categoryService.GetAData(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult> InsertCategory(CategoryInsertRequestViewModel request) {
+        public async Task<IActionResult> Insert(CategoryInsertRequestViewModel request)
+        {
+            var category = new Category()
+            {
+                Name = request.Name,
+                ShortName = request.ShortName
+            };
 
-            return Ok(await _categoryService.InsertCategory(request));
+            return Ok(await _categoryService.AddCategory(category));
         }
 
         [HttpPut("id")]
@@ -40,9 +45,11 @@ namespace UniversityManagementSystem.API.Controllers
             return Ok(await _categoryService.UpdateCategory(id, request));
         }
 
+
         [HttpDelete("id")]
-        public async Task<IActionResult> DeleteCategory(int Id) {  
-            return Ok(await _categoryService.DeleteCategory(Id));
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok(await _categoryService.DeleteCategory(id));
         }
 
     }

@@ -24,8 +24,6 @@ namespace UniversityManagementSystem.API.Controllers
             return Ok(await _productService.GetAllProducts());
         }
 
-
-
         [HttpGet("id")]
         public async Task<IActionResult> GetAProductData(int id)
         {

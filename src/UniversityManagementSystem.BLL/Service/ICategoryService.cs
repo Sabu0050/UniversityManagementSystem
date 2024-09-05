@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
 using UniversityManagementSystem.DLL.Model;
 using UniversityManagementSystem.DLL.Repository;
+using UniversityManagementSystem.DLL.uow;
 
 namespace UniversityManagementSystem.BLL.Service
 {
@@ -11,7 +12,7 @@ namespace UniversityManagementSystem.BLL.Service
     {
         Task<List<Category>> GetAll();
         Task<Category?> GetAData(int id);
-        Task<Category> AddCategory(Category request);
+        Task<Category> AddCategory(CategoryInsertRequestViewModel request);
         Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request);
         Task<Category> DeleteCategory(int id);
 
@@ -19,29 +20,32 @@ namespace UniversityManagementSystem.BLL.Service
 
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(IUnitOfWork unitOfWork)
         {
-            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<Category>> GetAll()
         {
-            return await _categoryRepository.FindAll().ToListAsync();
+            return await _unitOfWork.CategoryRepository.FindAll().ToListAsync();
         }
 
         public async Task<Category> GetAData(int id)
         {
-            return await _categoryRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+            return await _unitOfWork.CategoryRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Category> AddCategory(Category category)
+        public async Task<Category> AddCategory(CategoryInsertRequestViewModel request)
         {
-            _categoryRepository.Create(category);
+            var category = new Category { 
+                Name = request.Name,
+                ShortName = request.ShortName
+            };
+            _unitOfWork.CategoryRepository.Create(category);
 
-            if (await _categoryRepository.SaveChangesAsync())
+            if (await _unitOfWork.SaveChangesAsync())
             {
                 return category;
             }
@@ -68,9 +72,9 @@ namespace UniversityManagementSystem.BLL.Service
                 category.ShortName = request.ShortName;
             }
 
-            _categoryRepository.Update(category);
+            _unitOfWork.CategoryRepository.Update(category);
 
-            if (await _categoryRepository.SaveChangesAsync())
+            if (await _unitOfWork.SaveChangesAsync())
             {
                 return category;
             }
@@ -88,9 +92,9 @@ namespace UniversityManagementSystem.BLL.Service
                 throw new Exception("category not found");
             }
 
-            _categoryRepository.Delete(category);
+            _unitOfWork.CategoryRepository.Delete(category);
 
-            if (await _categoryRepository.SaveChangesAsync())
+            if (await _unitOfWork.SaveChangesAsync())
             {
                 return category;
             }

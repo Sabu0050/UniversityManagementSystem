@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UniversityManagementSystem.DLL.Model
 {
-    internal class CategoryProduct
+    [Table("CategoryProduct")]
+    public class CategoryProduct
     {
         public int ProductId { get; set; }
+        public Product Product { get; set; }
+
         public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

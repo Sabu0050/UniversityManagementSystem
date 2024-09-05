@@ -30,13 +30,7 @@ namespace UniversityManagementSystem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(CategoryInsertRequestViewModel request)
         {
-            var category = new Category()
-            {
-                Name = request.Name,
-                ShortName = request.ShortName
-            };
-
-            return Ok(await _categoryService.AddCategory(category));
+            return Ok(await _categoryService.AddCategory(request));
         }
 
         [HttpPut("id")]

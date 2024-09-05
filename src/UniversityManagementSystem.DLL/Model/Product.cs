@@ -15,6 +15,6 @@ namespace UniversityManagementSystem.DLL.Model
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public List<Category> Categoris { get; } = [];
+        public ICollection<CategoryProduct> CategoryProducts { get; set; } = new List<CategoryProduct>();
     }
 }

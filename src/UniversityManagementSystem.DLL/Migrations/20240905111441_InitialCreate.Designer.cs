@@ -12,7 +12,7 @@ using UniversityManagementSystem.DLL.DbContext;
 namespace UniversityManagementSystem.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240829174448_InitialCreate")]
+    [Migration("20240905111441_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,9 +34,7 @@ namespace UniversityManagementSystem.DLL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -48,9 +46,7 @@ namespace UniversityManagementSystem.DLL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -81,9 +77,7 @@ namespace UniversityManagementSystem.DLL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -98,9 +92,7 @@ namespace UniversityManagementSystem.DLL.Migrations
                         .HasColumnType("float");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -109,17 +101,31 @@ namespace UniversityManagementSystem.DLL.Migrations
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.CategoryProduct", b =>
                 {
-                    b.HasOne("UniversityManagementSystem.DLL.Model.Category", null)
-                        .WithMany()
+                    b.HasOne("UniversityManagementSystem.DLL.Model.Category", "Category")
+                        .WithMany("CategoryProducts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UniversityManagementSystem.DLL.Model.Product", null)
-                        .WithMany()
+                    b.HasOne("UniversityManagementSystem.DLL.Model.Product", "Product")
+                        .WithMany("CategoryProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("UniversityManagementSystem.DLL.Model.Category", b =>
+                {
+                    b.Navigation("CategoryProducts");
+                });
+
+            modelBuilder.Entity("UniversityManagementSystem.DLL.Model.Product", b =>
+                {
+                    b.Navigation("CategoryProducts");
                 });
 #pragma warning restore 612, 618
         }

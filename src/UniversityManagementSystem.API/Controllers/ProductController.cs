@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
 using UniversityManagementSystem.BLL.Service;
-using UniversityManagementSystem.DLL.DbContext;
-using UniversityManagementSystem.DLL.Model;
 
 namespace UniversityManagementSystem.API.Controllers
 {
@@ -21,19 +18,19 @@ namespace UniversityManagementSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            return Ok(await _productService.GetAllProducts());
+            return Ok(await _productService.GetAll());
         }
 
         [HttpGet("id")]
         public async Task<IActionResult> GetAProductData(int id)
         {
-            return Ok(await _productService.GetProductById(id));
+            return Ok(await _productService.GetAData(id));
         }
 
         [HttpPost]
         public async Task<ActionResult> InsertProduct(ProductInsertRequestViewModel request)
         {
-            return Ok(await _productService.InsertProduct(request));
+            return Ok(await _productService.AddProduct(request));
         }
 
         [HttpPut("id")]

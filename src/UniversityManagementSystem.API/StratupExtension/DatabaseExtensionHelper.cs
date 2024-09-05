@@ -12,5 +12,16 @@ namespace UniversityManagementSystem.API.StratupExtension
 
             return service;
         }
+
+        public static IApplicationBuilder RunMigration(
+        this IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.Migrate();
+            }
+            return app;
+        }
     }
 }

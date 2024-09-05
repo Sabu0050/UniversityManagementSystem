@@ -1,82 +1,50 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
-using UniversityManagementSystem.DLL.DbContext;
 using UniversityManagementSystem.DLL.Model;
-using UniversityManagementSystem.DLL.Repository;
+using UniversityManagementSystem.DLL.uow;
 
 namespace UniversityManagementSystem.BLL.Service
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAllProducts();
-        Task<Product> GetProductById(int id);
-
-        Task<Product> InsertProduct(ProductInsertRequestViewModel product);
-
-        Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel product);
-
+        Task<List<Product>> GetAll();
+        Task<Product?> GetAData(int id);
+        Task<Product> AddProduct(ProductInsertRequestViewModel request);
+        Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel request);
         Task<Product> DeleteProduct(int id);
+
     }
 
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IUnitOfWork unitOfWork)
         {
-            _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<Product>> GetAllProducts()
+        public async Task<List<Product>> GetAll()
         {
-            return await _productRepository.FindAll().ToListAsync();
+            return await _unitOfWork.ProductRepository.FindAll().ToListAsync();
         }
 
-        public async Task<Product> GetProductById(int id)
+        public async Task<Product> GetAData(int id)
         {
-            return await _productRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+            return await _unitOfWork.ProductRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Product> DeleteProduct(int id)
+        public async Task<Product> AddProduct(ProductInsertRequestViewModel request)
         {
-            var product = await GetProductById(id);
-
-            if (product == null)
-            {
-                throw new Exception("product not found");
-            }
-
-            _productRepository.Delete(product);
-
-            if (await _productRepository.SaveChangesAsync())
-            {
-                return product;
-            }
-
-            throw new Exception("something went wrong");
-        }
-
-
-
-        public async Task<Product> InsertProduct(ProductInsertRequestViewModel request)
-        {
-            var product = new Product
-            {
+            var product = new Product {
                 Name = request.Name,
                 Description = request.Description,
                 Price = request.Price
             };
-            _productRepository.Create(product);
+            _unitOfWork.ProductRepository.Create(product);
 
-            if (await _productRepository.SaveChangesAsync())
+            if (await _unitOfWork.SaveChangesAsync())
             {
                 return product;
             }
@@ -86,7 +54,13 @@ namespace UniversityManagementSystem.BLL.Service
 
         public async Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel request)
         {
-            var product = await GetProductById(id);
+            var product = await GetAData(id);
+
+            if (product == null)
+            {
+                throw new Exception("category not found");
+            }
+
             if (!request.Name.IsNullOrEmpty())
             {
                 product.Name = request.Name;
@@ -96,19 +70,41 @@ namespace UniversityManagementSystem.BLL.Service
             {
                 product.Description = request.Description;
             }
-            if (request.Price != 0)
+            if (request.Price>0)
             {
                 product.Price = request.Price;
             }
 
-            _productRepository.Update(product);
+            _unitOfWork.ProductRepository.Update(product);
 
-            if (await _productRepository.SaveChangesAsync())
+            if (await _unitOfWork.SaveChangesAsync())
             {
                 return product;
             }
 
             throw new Exception("something went wrong");
         }
+
+
+        public async Task<Product> DeleteProduct(int id)
+        {
+            var product = await GetAData(id);
+
+            if (product == null)
+            {
+                throw new Exception("category not found");
+            }
+
+            _unitOfWork.ProductRepository.Delete(product);
+
+            if (await _unitOfWork.SaveChangesAsync())
+            {
+                return product;
+            }
+
+            throw new Exception("something went wrong");
+        }
+
+
     }
 }

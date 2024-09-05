@@ -8,6 +8,6 @@
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public List<Product> Products { get; } = [];
+        public ICollection<CategoryProduct> CategoryProducts { get; set; } = new List<CategoryProduct>();
     }
 }

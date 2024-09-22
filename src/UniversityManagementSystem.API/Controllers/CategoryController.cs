@@ -18,13 +18,14 @@ namespace UniversityManagementSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _categoryService.GetAll());
+            return ToActionResult(await _categoryService.GetAll());
         }
 
         [HttpGet("id")]
         public async Task<IActionResult> GetAData(int id)
         {
-            return Ok(await _categoryService.GetAData(id));
+            var result = await _categoryService.GetAData(id);
+            return Ok(result);
         }
 
         [HttpPost]

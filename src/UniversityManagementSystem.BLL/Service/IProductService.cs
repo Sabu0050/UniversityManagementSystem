@@ -40,7 +40,7 @@ namespace UniversityManagementSystem.BLL.Service
             var product = new Product {
                 Name = request.Name,
                 Description = request.Description,
-                Price = request.Price
+                Price = (decimal) request.Price
             };
             _unitOfWork.ProductRepository.Create(product);
 
@@ -72,7 +72,7 @@ namespace UniversityManagementSystem.BLL.Service
             }
             if (request.Price>0)
             {
-                product.Price = request.Price;
+                product.Price = (decimal)request.Price;
             }
 
             _unitOfWork.ProductRepository.Update(product);

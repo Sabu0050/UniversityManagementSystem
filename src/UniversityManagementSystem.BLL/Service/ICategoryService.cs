@@ -14,7 +14,7 @@ namespace UniversityManagementSystem.BLL.Service
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetAll();
+        Task<ApiResponse<List<Category>>> GetAll();
         Task<Category?> GetAData(int id);
         Task<ApiResponse<Category>> AddCategory(CategoryInsertRequestViewModel request);
         Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request);
@@ -31,9 +31,10 @@ namespace UniversityManagementSystem.BLL.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<ApiResponse<List<Category>>> GetAll()
         {
-            return await _unitOfWork.CategoryRepository.FindAll().ToListAsync();
+            var result = await _unitOfWork.CategoryRepository.FindAll().ToListAsync();
+            return new ApiResponse<List<Category>>(result,true,"Data found successfully.");
         }
 
         public async Task<Category> GetAData(int id)

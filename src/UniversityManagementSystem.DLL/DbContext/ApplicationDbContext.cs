@@ -16,13 +16,11 @@ namespace UniversityManagementSystem.DLL.DbContext
 
             // modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             // modelBuilder.ApplyConfiguration(new ProductConfiguration());
-            modelBuilder.ApplyConfiguration(new CategoryProductConfiguration());
         }
 
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<CategoryProduct> CategoryProducts { get; set; }
 
         
     }

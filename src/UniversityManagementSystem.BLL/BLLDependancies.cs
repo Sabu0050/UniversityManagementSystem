@@ -13,7 +13,6 @@ namespace UniversityManagementSystem.BLL
         {
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ISeedService, SeedService>();
             AllFluentValidator(services);
             return services;
         }

@@ -54,7 +54,7 @@ namespace UniversityManagementSystem.BLL.Service
 
         public async Task<Product> UpdateProduct(int id, ProductInsertRequestViewModel request)
         {
-            var product = await GetAData(id);
+            var product = await _unitOfWork.ProductRepository.FindByConditionWithTracking(x=>x.Id==id).FirstOrDefaultAsync();
 
             if (product == null)
             {

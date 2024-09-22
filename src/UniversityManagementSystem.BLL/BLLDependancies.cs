@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using UniversityManagementSystem.BLL.Service;
+using UniversityManagementSystem.BLL.Validation;
+using UniversityManagementSystem.BLL.ViewModel.Requests;
 
 namespace UniversityManagementSystem.BLL
 {
@@ -10,7 +14,13 @@ namespace UniversityManagementSystem.BLL
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISeedService, SeedService>();
+            AllFluentValidator(services);
             return services;
+        }
+
+        public static void AllFluentValidator(IServiceCollection services)
+        { 
+            services.AddScoped<IValidator<CategoryInsertRequestViewModel>,CategoryInsertViewModelValidator>();
         }
     }
 }

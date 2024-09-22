@@ -47,7 +47,7 @@ namespace UniversityManagementSystem.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.CategoryProduct", b =>
@@ -62,7 +62,7 @@ namespace UniversityManagementSystem.DLL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CategoryProduct");
+                    b.ToTable("CategoryProduct", (string)null);
                 });
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.Product", b =>
@@ -93,7 +93,7 @@ namespace UniversityManagementSystem.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("UniversityManagementSystem.DLL.Model.CategoryProduct", b =>

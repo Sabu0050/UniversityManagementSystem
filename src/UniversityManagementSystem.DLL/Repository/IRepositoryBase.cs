@@ -13,6 +13,7 @@ namespace UniversityManagementSystem.DLL.Repository
     {
         IQueryable<T> FindAll();
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
+        IQueryable<T> FindByConditionWithTracking(Expression<Func<T, bool>> expression);
         Task Create(T model);
         Task CreateRange(List<T> models);
         void Update(T model);
@@ -40,7 +41,10 @@ namespace UniversityManagementSystem.DLL.Repository
         {
             return _context.Set<T>().Where(expression).AsNoTracking();
         }
-
+        IQueryable<T> IRepositoryBase<T>.FindByConditionWithTracking(Expression<Func<T, bool>> expression)
+        {
+            return _context.Set<T>().Where(expression);
+        } 
         public async Task Create(T model)
         {
             await _context.Set<T>().AddAsync(model);
@@ -74,6 +78,6 @@ namespace UniversityManagementSystem.DLL.Repository
             return await _context.SaveChangesAsync() > 0;
         }
 
-        
+       
     }
 }

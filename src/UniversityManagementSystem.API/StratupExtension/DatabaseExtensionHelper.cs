@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UniversityManagementSystem.BLL.SeedData;
 using UniversityManagementSystem.DLL.DbContext;
 
 namespace UniversityManagementSystem.API.StratupExtension
@@ -20,6 +21,13 @@ namespace UniversityManagementSystem.API.StratupExtension
             {
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 db.Database.Migrate();
+                
+                if(!db.Categories.Any() && !db.Products.Any()) {
+                    var categories = DataSeeder.SeedCategories(50);
+                    db.Categories.AddRange(categories);
+                    db.SaveChanges();
+                }
+
             }
             return app;
         }

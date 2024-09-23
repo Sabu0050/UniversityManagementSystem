@@ -14,7 +14,7 @@ namespace UniversityManagementSystem.BLL.GenericResponseFormat
         public string Message { get; set; }
         public IDictionary<string, string[]> Errors { get; set; }
 
-        public ApiResponse(T data, bool isSuccess, string message) { 
+        public ApiResponse(T data, bool isSuccess = true, string message="") { 
             Data = data;
             IsSuccess = isSuccess;
             Message = message;

@@ -33,8 +33,10 @@ namespace UniversityManagementSystem.BLL.Service
 
         public async Task<ApiResponse<List<Category>>> GetAll()
         {
-            var result = await _unitOfWork.CategoryRepository.FindAll().ToListAsync();
-            return new ApiResponse<List<Category>>(result,true,"Data found successfully.");
+            var categoryQuary = _unitOfWork.CategoryRepository.FindAll();
+            var totalData = await categoryQuary.CountAsync();
+            var result = await categoryQuary.ToListAsync();
+            return new ApiPaginateResponse<List<Category>>(result,1,10,totalData);
         }
 
         public async Task<Category> GetAData(int id)

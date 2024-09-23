@@ -17,10 +17,11 @@ namespace UniversityManagementSystem.BLL.SeedData
                 .RuleFor(c => c.ShortName, f => f.Commerce.ProductAdjective());
 
             var categories = fakerCategory.Generate(count);
-
+            Random random = new Random();
             foreach (var category in categories)
             {
-                category.Products = SeedProducts(category.Id, 10); // Seed 10 products per category
+                int randomNumber  = random.Next(2, 10);
+                category.Products = SeedProducts(category.Id, randomNumber); // Seed 10 products per category
             }
 
             return categories;

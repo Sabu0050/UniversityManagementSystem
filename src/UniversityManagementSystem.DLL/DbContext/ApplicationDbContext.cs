@@ -1,11 +1,13 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagementSystem.DLL.Configs;
 using UniversityManagementSystem.DLL.Model;
 
 namespace UniversityManagementSystem.DLL.DbContext
 {
-    public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,int>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

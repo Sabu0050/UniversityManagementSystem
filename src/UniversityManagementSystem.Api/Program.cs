@@ -3,6 +3,8 @@ using UniversityManagementSystem.DLL;
 using UniversityManagementSystem.BLL;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
+using UniversityManagementSystem.DLL.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +15,11 @@ builder.Services.AddControllers(
     .AddJsonOptions(opt=> opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerExtensionHelper();
 builder.Services.AddDatabaseExtensionHelper(builder.Configuration);
 builder.Services.AddBLLDependancies(); //this is for bll dependencies
 builder.Services.AddDLLDependancies(); //this is for dll dependencies
+builder.Services.AddIdentityCustomExtensionHelper();
 
 var app = builder.Build();
 
@@ -28,10 +31,12 @@ if (app.Environment.IsDevelopment())
     app.RunMigration();
 }
 
+//app.MapIdentityApi<ApplicationUser>();
+
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
+
+app.UseOwnApplicationAuthentication();
 
 app.Run();

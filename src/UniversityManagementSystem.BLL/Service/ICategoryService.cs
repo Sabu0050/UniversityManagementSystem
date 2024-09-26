@@ -15,7 +15,7 @@ namespace UniversityManagementSystem.BLL.Service
     public interface ICategoryService
     {
         Task<ApiResponse<List<Category>>> GetAll();
-        Task<Category?> GetAData(int id);
+        Task<Category> GetAData(int id);
         Task<ApiResponse<Category>> AddCategory(CategoryInsertRequestViewModel request);
         Task<Category> UpdateCategory(int id, CategoryInsertRequestViewModel request);
         Task<Category> DeleteCategory(int id);
@@ -64,7 +64,7 @@ namespace UniversityManagementSystem.BLL.Service
                 Name = request.Name,
                 ShortName = request.ShortName
             };
-            _unitOfWork.CategoryRepository.Create(category);
+            await _unitOfWork.CategoryRepository.Create(category);
 
             if (await _unitOfWork.SaveChangesAsync())
             {

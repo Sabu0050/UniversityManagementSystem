@@ -49,7 +49,7 @@ namespace UniversityManagementSystem.BLL.Service
 
             var roleAssign = await _userManager.AddToRoleAsync(user,"customer");
 
-            return new ApiResponse<string>("Welcome to our system",true, "Welcome to our system");
+             return new ApiResponse<string>("Welcome to our system",true, "Welcome to our system");
         }
     }
 }

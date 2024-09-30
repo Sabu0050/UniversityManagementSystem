@@ -6,12 +6,16 @@ namespace UniversityManagementSystem.API.StratupExtension
 {
     public static class DatabaseExtensionHelper
     {
-        public static IServiceCollection AddDatabaseExtensionHelper(this IServiceCollection service, IConfiguration configuration) {
+        public static IServiceCollection AddDatabaseExtensionHelper(this IServiceCollection services, IConfiguration configuration) {
 
-            service.AddDbContext<ApplicationDbContext>(opt=>
-            opt.UseSqlServer(configuration.GetConnectionString("DefaultString")));
+            services.AddDbContext<ApplicationDbContext>(opt =>
+            {
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultString"));
+                opt.UseOpenIddict<int>();
+            });
+            
 
-            return service;
+            return services;
         }
 
         public static IApplicationBuilder RunMigration(
@@ -28,6 +32,7 @@ namespace UniversityManagementSystem.API.StratupExtension
                     db.SaveChanges();
                 }
                 DataSeeder.SeedUserRoleData(scope.ServiceProvider );
+                DataSeeder.SeedApplication(scope.ServiceProvider);
             }
             return app;
         }

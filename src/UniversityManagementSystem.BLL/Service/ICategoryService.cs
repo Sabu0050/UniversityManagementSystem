@@ -1,13 +1,10 @@
-﻿using Azure.Core;
-using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using UniversityManagementSystem.BLL.GenericResponseFormat;
 using UniversityManagementSystem.BLL.Validation;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
+using UniversityManagementSystem.DLL.Helper;
 using UniversityManagementSystem.DLL.Model;
-using UniversityManagementSystem.DLL.Repository;
 using UniversityManagementSystem.DLL.uow;
 
 namespace UniversityManagementSystem.BLL.Service

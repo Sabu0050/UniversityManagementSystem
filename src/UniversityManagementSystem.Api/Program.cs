@@ -20,6 +20,7 @@ builder.Services.AddDatabaseExtensionHelper(builder.Configuration);
 builder.Services.AddBLLDependancies(); //this is for bll dependencies
 builder.Services.AddDLLDependancies(); //this is for dll dependencies
 builder.Services.AddIdentityCustomExtensionHelper();
+builder.Services.AddOAuth2ExtensionHelper(); // added openiddict setup
 
 var app = builder.Build();
 

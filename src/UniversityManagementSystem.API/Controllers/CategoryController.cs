@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using UniversityManagementSystem.BLL.Service;
 using UniversityManagementSystem.BLL.ViewModel.Requests;
 using UniversityManagementSystem.DLL.Model;
@@ -16,7 +17,7 @@ namespace UniversityManagementSystem.API.Controllers
             
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

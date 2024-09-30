@@ -1,17 +1,35 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenIddict.Abstractions;
 using UniversityManagementSystem.DLL.Model;
 
 namespace UniversityManagementSystem.BLL.SeedData
 {
     public static class DataSeeder
     {
+        public static void SeedApplication(IServiceProvider serviceProvider)
+        {
+            var applicationManager = serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            if (applicationManager.FindByClientIdAsync("customer_to_bkash_main_api").Result is null)
+            {
+                var app = applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "customer_to_bkash_main_api",
+                    ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3654",
+                    DisplayName = "My customer call our bkash application",
+                   // PostLogoutRedirectUris = { new Uri("http://localhost:53507/signout-callback-oidc") },
+                   // RedirectUris = { new Uri("http://localhost:53507/signin-oidc") },
+                    Permissions =
+                    {
+                        //OpenIddictConstants.Permissions.Endpoints.Authorization,
+                        //OpenIddictConstants.Permissions.Endpoints.Logout,
+                        OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.GrantTypes.Password
+                    }
+                }).Result;
+            }
+        }
         public static void SeedUserRoleData(IServiceProvider serviceProvider)
         {
             string[] roleNames = { "Admin", "Customer", "Manager", "Moderator","SuperAdmin"};

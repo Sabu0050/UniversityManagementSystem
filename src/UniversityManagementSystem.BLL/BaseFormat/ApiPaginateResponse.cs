@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UniversityManagementSystem.BLL.GenericResponseFormat
+﻿namespace UniversityManagementSystem.BLL.GenericResponseFormat
 {
     public class ApiPaginateResponse<T> : ApiResponse<T>
     {

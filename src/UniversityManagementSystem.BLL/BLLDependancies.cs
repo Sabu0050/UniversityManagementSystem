@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using UniversityManagementSystem.BLL.Service;
@@ -13,6 +14,7 @@ namespace UniversityManagementSystem.BLL
         {
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IAuthenticateService, AuthenticateService>();
             AllFluentValidator(services);
             return services;
         }
@@ -20,6 +22,7 @@ namespace UniversityManagementSystem.BLL
         public static void AllFluentValidator(IServiceCollection services)
         { 
             services.AddScoped<IValidator<CategoryInsertRequestViewModel>,CategoryInsertViewModelValidator>();
+            services.AddScoped<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
         }
     }
 }

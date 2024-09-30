@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,25 @@ namespace UniversityManagementSystem.BLL.SeedData
 {
     public static class DataSeeder
     {
+        public static void SeedUserRoleData(IServiceProvider serviceProvider)
+        {
+            string[] roleNames = { "Admin", "Customer", "Manager", "Moderator","SuperAdmin"};
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+
+            foreach ( var roleName in roleNames )
+            {
+                var lowerValue = roleName.ToLower();
+                var isRoleExist = roleManager.RoleExistsAsync(roleName).Result;
+                if ( !isRoleExist)
+                {
+                    var res = roleManager.CreateAsync(new ApplicationRole() {
+                        Name = lowerValue
+                    }).Result;
+                }
+
+            }
+        }
+
         public static List<Category> SeedCategories(int count)
         {
             var fakerCategory = new Faker<Category>()

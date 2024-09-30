@@ -27,7 +27,7 @@ namespace UniversityManagementSystem.API.StratupExtension
                     db.Categories.AddRange(categories);
                     db.SaveChanges();
                 }
-
+                DataSeeder.SeedUserRoleData(scope.ServiceProvider );
             }
             return app;
         }

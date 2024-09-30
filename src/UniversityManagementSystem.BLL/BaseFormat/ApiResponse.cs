@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace UniversityManagementSystem.BLL.GenericResponseFormat
             Message = "validation error happened";
             Errors = errors.GroupBy(e=>e.PropertyName).ToDictionary(g=>
             g.Key,g=>g.Select(e=>e.ErrorMessage).ToArray());
+        }
+        public ApiResponse(IEnumerable<IdentityError> errors) {
+            IsSuccess = false;
+            Message = "Identity error happened";
+            Errors = errors.GroupBy(e=>e.Code).ToDictionary(g=>
+            g.Key,g=>g.Select(e=>e.Description).ToArray());
         }
     }
 }

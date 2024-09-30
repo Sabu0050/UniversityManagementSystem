@@ -9,5 +9,8 @@ namespace UniversityManagementSystem.DLL.Model
 {
     public class ApplicationUser : IdentityUser<int>
     {
+        public string Address { get; set; }
+        public DateTime DateOfBirth { get; set; }
+
     }
 }

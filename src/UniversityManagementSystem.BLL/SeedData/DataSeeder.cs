@@ -29,6 +29,26 @@ namespace UniversityManagementSystem.BLL.SeedData
                     }
                 }).Result;
             }
+            
+            if (applicationManager.FindByClientIdAsync("customer_from_facebook").Result is null)
+            {
+                var app = applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "customer_from_facebook",
+                    ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3654",
+                    DisplayName = "My facebook customer call our bkash application",
+                   // PostLogoutRedirectUris = { new Uri("http://localhost:53507/signout-callback-oidc") },
+                   // RedirectUris = { new Uri("http://localhost:53507/signin-oidc") },
+                    Permissions =
+                    {
+                        //OpenIddictConstants.Permissions.Endpoints.Authorization,
+                        //OpenIddictConstants.Permissions.Endpoints.Logout,
+                        OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.GrantTypes.Password,
+                        OpenIddictConstants.Permissions.GrantTypes.RefreshToken
+                    }
+                }).Result;
+            }
         }
         public static void SeedUserRoleData(IServiceProvider serviceProvider)
         {

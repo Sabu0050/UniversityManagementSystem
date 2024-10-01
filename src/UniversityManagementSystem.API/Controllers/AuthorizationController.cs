@@ -72,14 +72,60 @@ namespace UniversityManagementSystem.API.Controllers
                         .SetClaims(Claims.Role, [.. (await _userManager.GetRolesAsync(user))]);
 
                 // Set the list of scopes granted to the client application.
-                identity.SetScopes(new[]
-                {
-                Scopes.OpenId,
-                Scopes.Email,
-                Scopes.Profile,
-                Scopes.Roles
-            }.Intersect(request.GetScopes()));
+                //identity.SetScopes(new[]
+                //{
+                //    Scopes.OpenId,
+                //    Scopes.Email,
+                //    Scopes.Profile,
+                //    Scopes.Roles
+                //}.Intersect(request.GetScopes()));
+                identity.SetScopes(request.GetScopes());
+                identity.SetDestinations(GetDestinations);
 
+                return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            }
+            else if (request.IsRefreshTokenGrantType())
+            {
+                // Retrieve the claims principal stored in the refresh token.
+                var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+                // Retrieve the user profile corresponding to the refresh token.
+                var user = await _userManager.FindByIdAsync(result.Principal.GetClaim(Claims.Subject));
+                if (user == null)
+                {
+                    var properties = new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The refresh token is no longer valid."
+                    });
+
+                    return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                }
+
+                // Ensure the user is still allowed to sign in.
+                if (!await _signInManager.CanSignInAsync(user))
+                {
+                    var properties = new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The user is no longer allowed to sign in."
+                    });
+
+                    return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                }
+
+                var identity = new ClaimsIdentity(result.Principal.Claims,
+                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                    nameType: Claims.Name,
+                    roleType: Claims.Role);
+
+                // Override the user claims present in the principal in case they changed since the refresh token was issued.
+                identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                        .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                        .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                        .SetClaim(Claims.PreferredUsername, await _userManager.GetUserNameAsync(user))
+                        .SetClaims(Claims.Role, [.. (await _userManager.GetRolesAsync(user))]);
+                identity.SetScopes(request.GetScopes());
                 identity.SetDestinations(GetDestinations);
 
                 return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);

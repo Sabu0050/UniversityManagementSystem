@@ -16,7 +16,8 @@ namespace UniversityManagementSystem.API.StratupExtension
                 // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
                 options.UseEntityFrameworkCore()
                        .UseDbContext<ApplicationDbContext>()
-                       .ReplaceDefaultEntities<int>(); ;
+                       .ReplaceDefaultEntities<int>();
+
             })
 
             // Register the OpenIddict server components.
@@ -25,8 +26,8 @@ namespace UniversityManagementSystem.API.StratupExtension
                 // Enable the token endpoint.
                 options.SetTokenEndpointUris("connect/token");
 
-                // Enable the password flow.
-                options.AllowPasswordFlow();
+                // Enable the password flow and refreshtoke flow.
+                options.AllowPasswordFlow().AllowRefreshTokenFlow();
 
                 // Accept anonymous clients (i.e clients that don't send a client_id).
                 options.AcceptAnonymousClients();
@@ -38,10 +39,15 @@ namespace UniversityManagementSystem.API.StratupExtension
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
                        .EnableTokenEndpointPassthrough();
+                // Set Accesstoken Lifttime as required
+                options.SetAccessTokenLifetime(TimeSpan.FromMinutes(10));
+                //Set refreshtoken lifetime as required
+                options.SetRefreshTokenLifetime(TimeSpan.FromMinutes(60));
             })
+
             .AddClient(options=>{
-                // Allow grant_type=password to be negotiated.
-                options.AllowPasswordFlow();
+                // Allow grant_type=password to be negotiated also refresh token.
+                options.AllowPasswordFlow().AllowRefreshTokenFlow();
 
                 // Disable token storage, which is not necessary for non-interactive flows like
                 // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
